@@ -45,9 +45,17 @@ resource "azurerm_network_interface" "rhel-nic1" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet1.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.rhel_pub.id
   }
 }
 
+resource "azurerm_public_ip" "rhel_pub" {
+  name                = "rhel_pub_ipp1"
+  resource_group_name = azurerm_resource_group.rhel-vm.name
+  location            = azurerm_resource_group.rhel-vm.location
+  allocation_method   = "Dynamic"
+
+}
 resource "azurerm_linux_virtual_machine" "rhelvm" {
     name = "rhelvm"
     resource_group_name = azurerm_resource_group.rhel-vm.name
@@ -60,7 +68,7 @@ resource "azurerm_linux_virtual_machine" "rhelvm" {
 
     admin_ssh_key {
       username = "tory.admin"
-      public_key = file("/home/tory/.ssh/id_rsa.pub")
+      public_key = file("/home/tory215/.ssh/id_rsa.pub")
     }
     os_disk {
         caching = "ReadWrite"
